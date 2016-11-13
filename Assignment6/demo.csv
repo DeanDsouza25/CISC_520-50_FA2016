@@ -1,0 +1,26 @@
+#Converting table from the image into required form for the algorithm
+Biscuits, Bread, Cheese, Coffee, Yogurt
+Bread, Cereal, Cheese, Coffee
+Cheese, Chocolate, Donuts, Juice, Milk
+Bread, Cheese, Coffee, Cereal, Juice
+Bread, Cereal, Chocolate, Donuts, Juice
+Milk, Tea
+Biscuits, Bread, Cheese, Coffee, Milk
+Eggs, Milk, Tea
+Bread, Cereal, Cheese, Chocolate, Coffee
+Bread, Cereal, Chocolate, Donuts, Juice
+Bread, Cheese, Juice
+Bread, Cheese, Coffee, Donuts, Juice
+Biscuits, Bread, Cereal
+Cereal, Cheese, Coffee, Donuts, Juice
+Chocolate, Coffee
+Donuts
+Donuts, Eggs, Juice
+Biscuits, Bread, Cheese, Coffee
+Bread, Cereal, Chocolate, Donuts, Juice
+Cheese, Chocolate, Donuts, Juice
+Milk, Tea, Yogurt
+Bread, Cereal, Cheese, Coffee
+Chocolate, Donuts, Juice, Milk, Newspaper
+Newspaper, Pastry, Rolls
+Rolls, Sugar, Tea
