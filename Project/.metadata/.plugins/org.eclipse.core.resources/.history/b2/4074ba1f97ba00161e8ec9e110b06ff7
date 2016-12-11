@@ -1,0 +1,63 @@
+'''
+Created on Dec 4, 2016
+
+@author: demon
+'''
+# Importing Required Libraries
+import csv
+import nltk
+from ProjectTokenizer import pToken
+from ProjectTagger import pTagger
+
+# Declaring empty holder for trainign set
+allTweets=[]
+
+# Reading in the data from the file
+csvfile = open('C:/Users/demon/OneDrive/Documents/GitHub/CISC_520-50_FA2016/Project/data/FinalData.csv')
+reader = csv.DictReader(csvfile, dialect='excel', fieldnames=['sentiment', 'ID', 'date', 'query', 'author', 'content'])
+for row in reader:
+    allTweets.append((row['content'], row['sentiment']))
+csvfile.close()
+
+# Separating the training and testing data
+sep = int(0.8*len(allTweets))
+trainTweets = allTweets[:sep]
+testTweets = allTweets[sep:]
+
+# Creating a list of tokenized words and sentiment
+tweets = []
+for (words,sentiment) in trainTweets:
+    filteredWords = [e for (e,t) in pTagger(pToken(words)) if len(e) >= 3 and t not in ['UserID','link','num','email']]
+    tweets.append((filteredWords,sentiment))
+
+# Function to create list of all words
+def getWordsInTweets(tweets):
+    allWords=[]
+    for (words, sentiment) in tweets:
+        allWords.extend(words)
+    return allWords
+
+# Function to get frequency distribution to be used as feature
+def getWordFeatures(tWordList):
+    tWordList = nltk.FreqDist(tWordList)
+    wordFeat = tWordList.keys()
+    return wordFeat
+
+tweet_feats = getWordFeatures(getWordsInTweets(tweets))
+
+# Function to extract features from new tweets
+def FeatExt(ttweet):
+    tweet_words = set(ttweet)
+    feat = {}
+    for w in tweet_feats:
+        feat['contains(%s)' % w] = (w in tweet_words)
+    return feat
+
+# Building the Naive Bayes classifier
+trainTweetsApplied = nltk.classify.apply_features(FeatExt, trainTweets)
+classifier1 = nltk.NaiveBayesClassifier.train(trainTweetsApplied)
+print(classifier1.show_most_informative_features(30))
+
+# Building Decision Tree Classifier
+classifier2 = nltk.DecisionTreeClassifier.train(trainTweetsApplied)
+print(classifier2.pseudocode(depth=5))

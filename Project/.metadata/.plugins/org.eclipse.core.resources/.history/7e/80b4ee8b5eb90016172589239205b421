@@ -1,0 +1,11 @@
+'''
+Created on Dec 3, 2016
+
+@author: demon
+'''
+import csv
+from _sqlite3 import Row
+
+csvfile = open('C:/Users/demon/OneDrive/Documents/GitHub/CISC_520-50_FA2016/Project/data/TrainingData.csv')
+for row in csvfile:
+    print row
