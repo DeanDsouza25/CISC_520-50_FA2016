@@ -4,16 +4,16 @@
 # Importing Required Libraries
 import csv
 import nltk
+import re
 import random
+import math
+import collections
 from ProjectTokenizer import pToken
 from ProjectTagger import pTagger
 from nltk.corpus import stopwords
-from nltk.text import Text
-from nltk.classify.util import apply_features
 
-# Declaring empty holder for trainign set
+# Declaring empty holder for training set
 allTweets=[]
-
 # Reading in the data from the file
 csvfile = open('C:/Users/demon/OneDrive/Documents/GitHub/CISC_520-50_FA2016/Project/data/FinalData.csv')
 reader = csv.DictReader(csvfile, dialect='excel', fieldnames=['sentiment', 'ID', 'date', 'query', 'author', 'content'])
@@ -21,59 +21,104 @@ for row in reader:
     allTweets.append((row['content'], row['sentiment']))
 csvfile.close()
 
-# Separating the training and testing data
-sep = int(0.8*len(allTweets))
-random.shuffle(allTweets)
-trainTweets = allTweets[:sep]
-testTweets = allTweets[sep:]
-print(testTweets)
+# Separating positive and negative Tweets
+negSet = [(e,s) for (e,s) in allTweets if s == '0']
+posSet = [(e,s) for (e,s) in allTweets if s == '4']
+# Defining separation parameter for each sentiment
+negCutOff = int(math.floor(len(negSet)*0.75))
+posCutOff = int(math.floor(len(posSet)*0.75))
+# Creating Training and Testing sets
+trainTweets = negSet[:negCutOff] + posSet[:posCutOff]
+testTweets = negSet[negCutOff:] + posSet[posCutOff:]
+# Randomizing the order of test and train Tweets
+random.shuffle(trainTweets)
+random.shuffle(testTweets)
 
-# Creating a list of tokenized words and sentiment
-tweets = []
-for (words,sentiment) in trainTweets:
-    filter1Words=([w.lower() for w in pToken(words) if len(w) >= 2 and w not in stopwords.words('english')])
-    filteredWords = Text([e for (e,t) in pTagger(filter1Words) if  t not in ['email','punct','link']])
-    tweets.append((filteredWords,sentiment))
-
-# Function to create list of all words
+# Function to create list of all words and their sentiment
 def getWordsInTweets(tweets):
     wordsInTweets=[]
-    for (word, sentiment) in tweets:
-        wordsInTweets.append(word)
+    for (words, sentiment) in tweets:
+        filter1Words = ([w.lower() for w in pToken(words) if len(w)>3 and w not in stopwords.words('english')])
+        filteredWords = pTagger(filter1Words) 
+        for w in filteredWords:
+            if (w[0][1] not in ['UserID','email', 'link']):
+                wordsInTweets.append((w[0][0],sentiment))
     return wordsInTweets
-
 # Function to get frequency distribution to be used as feature
-def getWordFeatures(tWordList):
-    tWordList = nltk.FreqDist(tWordList)
-    wordFeats = tWordList.keys()
-    return wordFeats
+def getWordFeatures(tWordList, num):
+    # Creating empty frequency and conditional frequency distributions
+    tfd = nltk.FreqDist()
+    tcfd = nltk.ConditionalFreqDist()
+    # Building the distribution
+    for (word,sentiment) in tWordList:
+        tfd.inc(word)
+        tcfd[sentiment].inc(word)
+    # Obtaining negative, positive and total word counts
+    negCount = tcfd['0'].N()
+    posCount = tcfd['4'].N()
+    totalCount = negCount + posCount
+    # Defining empty holder for word scores
+    wScores={}
+    # Calculating word scores
+    for (word,freq) in tfd.iteritems():
+        negScore = nltk.metrics.BigramAssocMeasures.chi_sq(tcfd['0'][word], (freq,negCount), totalCount)
+        poScore = nltk.metrics.BigramAssocMeasures.chi_sq(tcfd['4'][word], (freq,posCount), totalCount)
+        wScores[word] = negScore +poScore
+    # Sorting based on word scores and then creating set of 'n' best word features 
+    bestVals = sorted(wScores.iteritems(), key=lambda (w,s): s, reverse=True)[:num]
+    bestFeats = set([w for (w,s) in bestVals])
+    return bestFeats
 
-tweetsFeats = getWordFeatures(getWordsInTweets(tweets))
+def evaluateNBC(num):
+    # Using the getWordsInTweets() and getWordFeatures() to get the best features to use in the FeatExt()
+    tweetsFeats = getWordFeatures(getWordsInTweets(trainTweets),num)
+    # Function to extract features from Tweets
+    def FeatExt(ttweet):
+        tagdWords = pTagger([w.lower() for w in pToken(ttweet) if len(w)>3 and w not in stopwords.words('english')])
+        tWords = []
+        for w in tagdWords:
+            if (w[0][1] not in ['UserID','email', 'link']):
+                print(w[0][0])
+                tWords.append(w[0][0])       
+        feat = {}
+        for e in tweetsFeats:
+            feat['contains(%s)' % e] = (e in tWords)
+        for e in tWords:
+            if re.search('\!{2,}',e):
+                feat['!']=True
+        for e in tWords:
+            if re.search('\?{2,}',e):
+                feat['?']=True
+        for e in tWords:
+            if re.search('\.{3,}',e):
+                feat['.']=True
+        return feat
+         
+    # Applying features to training and testing sets
+    trainTweetsApplied = nltk.classify.apply_features(FeatExt, trainTweets)
+    testTweetsApplied = nltk.classify.apply_features(FeatExt, testTweets)
+    # Building the Naive Bayes Classifier
+    classifierNB = nltk.NaiveBayesClassifier.train(trainTweetsApplied)
+        
+    # Preparing data for evaluation
+    refSet = collections.defaultdict(set)
+    testFeatSet = collections.defaultdict(set)
+    for i, (feature,sentiment) in enumerate(testTweetsApplied):
+        refSet[sentiment].add(i)
+        pred= classifierNB.classify(feature)
+        testFeatSet[pred].add(i)
+        
+    print("evaluating best %d features: " %(num))
+    print(nltk.classify.accuracy(classifierNB, testTweetsApplied))
+    print("Precision for negative Tweets: ", nltk.metrics.precision(refSet['0'], testFeatSet['0']))
+    print("Recall for negative Tweets: ", nltk.metrics.recall(refSet['0'], testFeatSet['0']))
+    print()
+    print("Precision for positive Tweets: ", nltk.metrics.precision(refSet['4'], testFeatSet['4']))
+    print("Recall for positive Tweets: ", nltk.metrics.recall(refSet['4'], testFeatSet['4']))
+    print(classifierNB.show_most_informative_features(10))
 
-# Function to extract features from new tweets
-def FeatExt(ttweet):
-    tagdWords = pTagger(pToken(ttweet))
-    tWords = (e for (e,t) in tagdWords if t not in ['email','DT','punct', 'link'] and len(e)>=2)
-    feat = {}
-    for e in tweetsFeats:
-        feat['contains(%s)' % e] = (e in tWords)
-    if [e for (e,t) in tagdWords if t in ['punct']] != []:
-        feat['punct'] = max([len(e) for (e,t) in tagdWords if t in ['punct']])
-    feat['htag'] = sum([1 for (e,t) in tagdWords if t in ['htag']])
-    return feat
-
-# Building the Naive Bayes classifier
-trainTweetsApplied = nltk.classify.apply_features(FeatExt, trainTweets)
-classifier1 = nltk.NaiveBayesClassifier.train(trainTweetsApplied)
-print(classifier1.show_most_informative_features(30))
+evaluateNBC(1000)
 
 # Building Decision Tree Classifier
-#classifier2 = nltk.DecisionTreeClassifier.train(trainTweetsApplied)
-#print(classifier2.pseudocode(depth=5))
-
-# Evaluating the classifiers
-print("For Naive Bayes Classifier:")
-print(nltk.classify.accuracy(classifier1,apply_features(FeatExt,testTweets)))
-
-#print("For Decision Tree Classifier:")
-#print(nltk.classify.accuracy(classifier2,testTweets))
+#classifierDT = nltk.DecisionTreeClassifier.train(trainTweetsApplied)
+#print(classifierDT.pseudocode(depth=5))

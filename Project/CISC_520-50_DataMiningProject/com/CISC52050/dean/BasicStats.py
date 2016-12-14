@@ -1,7 +1,5 @@
 '''
-Created on Nov 29, 2016
-
-@author: demon
+@author: Dean D'souza
 '''
 # Loading necessary Libraries
 from __future__ import division
@@ -35,7 +33,7 @@ vocab = fdistv.keys()
 #fdistv.plot(50)
 #fdistv.plot(50,cumulative=True)
 
-# Collocations (a.k.a. Words occuring together with a frequency considered greater than chance)
+# Collocations (a.k.a. Words occurring together with a frequency considered greater than chance)
 #print(nText.collocations())
 
 # Tagging the tokens with Part-of-Speech tag

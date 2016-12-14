@@ -1,48 +1,52 @@
 -- VERSION_4
 -- START DISKCACHE_2
 C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\.metadata\.plugins\org.eclipse.core.resources\.projects\CISC_520-50_DataMiningProject\com.python.pydev.analysis\v2_indexcache
-com.CISC52050.dean.ProjectTagger|1481038581933798000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTagger.py
+com.CISC52050.dean.ProjectTagger|1481671624015928000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTagger.py
 com.CISC52050.dean.__init__|1480770316036413000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\__init__.py
-com.CISC52050.dean.RSData|1480770537332650000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\RSData.py
+com.CISC52050.dean.RSData|1481638934313323000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\RSData.py
 com.__init__|1480770316039415000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\__init__.py
-com.CISC52050.dean.WPData|1480900272976404000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\WPData.py
-com.CISC52050.dean.ProjectTokenizer|1481039471970262000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTokenizer.py
-com.CISC52050.dean.BasicStats|1481040763675825000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\BasicStats.py
+com.CISC52050.dean.WPData|1481638328828005000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\WPData.py
+com.CISC52050.dean.ProjectTokenizer|1481671550528582000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTokenizer.py
+com.CISC52050.dean.BasicStats|1481638922319734000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\BasicStats.py
 com.CISC52050.__init__|1480770316038414000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\__init__.py
-com.CISC52050.dean.ProjectModel|1481116211153624000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectModel.py
 -- END DISKCACHE
 -- START DICTIONARY
-6
-5=com.CISC52050.dean.ProjectTagger
-3=com.CISC52050.dean.RSData
-2=com.CISC52050.dean.WPData
-6=com.CISC52050.dean.ProjectTokenizer
-4=com.CISC52050.dean.BasicStats
-1=com.CISC52050.dean.ProjectModel
+5
+4=com.CISC52050.dean.ProjectTagger
+2=com.CISC52050.dean.RSData
+1=com.CISC52050.dean.WPData
+5=com.CISC52050.dean.ProjectTokenizer
+3=com.CISC52050.dean.BasicStats
 -- END DICTIONARY
 -- START TREE 1
-21
-all|1|allTweets!11@
-cla|1|classifier1!11@
-csv|2|csvfile!19@csvfile!11@
-dfi|2|dfile!27@dfile!19@
-fdi|2|fdisttag!35@fdistv!35@
-fea|1|FeatExt!10@
-fil|2|filteredWords!11@filter1Words!11@
-get|2|getWordsInTweets!10@getWordFeatures!10@
-nfi|2|nfile!19@nfile!27@
-nte|1|nText!35@
-pta|1|pTagger!42@
-pto|2|pToken!50@pTok!35@
-rea|2|reader!11@reader!19@
-sep|1|sep!11@
-tag|2|tags!35@taggedTok!35@
-tem|1|tempTxt!35@
-tes|1|testTweets!11@
-tra|2|trainTweetsApplied!11@trainTweets!11@
-twe|2|tweets!11@tweetsFeats!11@
-txt|1|txtFile!35@
-voc|1|vocab!35@
+27
+all|0|
+cla|0|
+csv|1|csvfile!11@
+dfi|2|dfile!19@dfile!11@
+eva|0|
+fdi|2|fdisttag!27@fdistv!27@
+fea|0|
+fil|0|
+get|0|
+neg|0|
+nfi|2|nfile!11@nfile!19@
+nte|1|nText!27@
+pos|0|
+pre|0|
+pta|1|pTagger!34@
+pto|2|pToken!42@pTok!27@
+rea|1|reader!11@
+ref|0|
+sep|0|
+tag|2|tags!27@taggedTok!27@
+tem|1|tempTxt!27@
+tes|0|
+tra|0|
+twe|0|
+txt|1|txtFile!27@
+var|0|
+voc|1|vocab!27@
 -- END TREE
 -- START TREE 2
 0

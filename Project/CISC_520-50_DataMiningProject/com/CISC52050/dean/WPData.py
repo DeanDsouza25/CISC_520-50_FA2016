@@ -1,7 +1,5 @@
 '''
-Created on Nov 29, 2016
-
-@author: demon
+@author: Dean D'souza
 '''
 import csv
 

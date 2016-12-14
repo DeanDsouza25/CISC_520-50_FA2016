@@ -19,16 +19,25 @@ def pToken(pSent):
     # Iteratively inspecting and properly Tokenizing special conditions
     for t in tok:
         # Proper Tokenization of '&' as the it was translated to '&amp;' while loading
-        if re.search('^[A-Za-z0-9\'\-]*&amp;[A-Za-z0-9\'\-]*$',t):
-            tlist = re.findall('[A-Za-z0-9\']+',t)
-            if len(tlist) > 1:
-                temp.append(tlist[0])
-                temp.append('&')
-                if len(tlist)>2:
-                    temp.append(tlist[2])
-            else:
-                temp.append('&')
-        # Proper Tokenization of '"' which was trasnlated to '&quot;' while loading
+        if re.search('^[A-Za-z0-9\'\-]*(&amp;[A-Za-z0-9\'\-]*)+$',t):
+            wlist = re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)
+            dlist = re.findall('&amp;',t)
+            i=0
+            j=0
+            while i<len(wlist):
+                if re.search('^[A-Za-z0-9\'\-]+[\!@\*\?]*$',wlist[i]):
+                    tlist = re.findall('[A-Za-z0-9\'\-]+[!@\*\?]*',wlist[i])
+                    temp.append(re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',tlist[0])[0])
+                if j<len(dlist):
+                    temp.append(dlist[j])
+                i = i+1
+                j = j+1
+        # Proper Tokenization of '"' which was translated to '&quot;' while loading
+        elif re.search('^&quot;[A-Za-z0-9\'\-]*[\!@\*\?]*&quot;$',t):
+            temp.append('"')
+            if len(re.findall('[A-Za-z0-9\'\-]*[\!@\*\?]*',t))>2:
+                temp.append(re.findall('[A-Za-z0-9\'\-]*[\!@\*\?]*',t)[1])
+            temp.append('"')
         elif re.search('^&quot;[A-Za-z0-9\'\-]*$',t):
             tlist = re.findall('[A-Za-z0-9\'\-]+',t)
             if len(tlist)>1:
@@ -38,42 +47,51 @@ def pToken(pSent):
                 temp.append('"')       
         elif re.search('^[A-Za-z0-9\'\-]*[\!@\*\?]*&quot;$',t):
             if re.search('[A-Za-z0-9\'\-]+[\!@\*\?]*',t):
-                tlist = re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)
-                temp.append(re.findall('[A-Za-z0-9\'\-]+',tlist[0])[0])
-                if re.search('[\!@\*\?]+',tlist[0]):
-                    temp.append(re.findall('[\!@\*\?]+',tlist[0])[0])
+                temp.append(re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)[0])
             temp. append('"')
+        # Proper Tokenization of '()'
+        elif re.search('\([@#]?[A-Za-z0-9\'\-]*[\!@\*\?]*\)$',t):
+            temp.append('(')
+            if len(re.findall('[@#]?[A-Za-z0-9\'\-]*[\!@\*\?]*',t))>2:
+                temp.append(re.findall('[A-Za-z0-9\'\-]*[\!@\*\?]*',t)[1])
+            temp.append(')')
         # Proper Tokenization of '('
-        elif re.search('^\([A-Za-z0-9\'\-]*$',t):
-            tlist = re.findall('[A-Za-z0-9\'\-]+',t)
-            if len(tlist)>1:
-                temp. append('(')
-                temp.append(tlist[1])
-            else:
-                temp.append('(')
+        elif re.search('^\([A-Za-z0-9\'\-]*[\!@\*\?]*$',t):
+            temp. append('(')
+            tlist = re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)
+            if len(tlist)>=1:
+                temp.append(tlist[0])
         # Proper Tokenization of ')'
         elif re.search('^[A-Za-z0-9\'\-]*[\!@\*\?]*\)$',t):
             if re.search('[A-Za-z0-9\'\-]+[\!@\*\?]*',t):
                 tlist = re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)
-                temp.append(re.findall('[A-Za-z0-9\'\-]+',tlist[0])[0])
-                if re.search('[\!@\*\?]+',tlist[0]):
-                    temp.append(re.findall('[\!@\*\?]+',tlist[0])[0])
+                temp.append(re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',tlist[0])[0])
             temp. append(')')
         # Proper Tokenization of ','
         elif re.search('\,[A-Za-z0-9\'\-]*$',t):
+            temp. append(',')
             tlist = re.findall('[A-Za-z0-9\'\-]+',t)
-            if len(tlist)>1:
-                temp. append(',')
-                temp.append(tlist[1])
-            else:
-                temp.append(',')
+            if len(tlist)>=1:
+                temp.append(tlist[0])
         elif re.search('^[A-Za-z0-9\'\-]*[\!@\*\?]*\,$',t):
             if re.search('[A-Za-z0-9\'\-]+[\!@\*\?]*',t):
                 tlist = re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)
-                temp.append(re.findall('[A-Za-z0-9\'\-]+',tlist[0])[0])
-                if re.search('[\!@\*\?]+',tlist[0]):
-                    temp.append(re.findall('[\!@\*\?]+',tlist[0])[0])
+                temp.append(re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',tlist[0])[0])
             temp. append(',')
+        # Proper Tokenization for text containing '...'
+        elif re.search('^[A-Za-z0-9\'\-]+(\.{2,}[A-Za-z0-9]*[\!@\*\?]*)+$',t):
+            wlist = re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)
+            dlist = re.findall('\.{2,}',t)
+            i=0
+            j=0
+            while i<len(wlist):
+                if re.search('^[A-Za-z0-9\'\-]+[\!@\*\?]*$',wlist[i]):
+                    tlist = re.findall('[A-Za-z0-9\'\-]+[!@\*\?]*',wlist[i])
+                    temp.append(re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',tlist[0])[0])
+                if j<len(dlist):
+                    temp.append(dlist[j])
+                i = i+1
+                j = j+1
         # Tokenizing website links appropriately, this portion also ensures that end of sentences are properly Tokenized
         elif re.search('^[A-Za-z0-9]+\.[A-Za-z0-9]+$',t):
             if re.search('^[A-Za-z0-9]+\.[cnoim][oer][mtg]?$',t):
@@ -84,28 +102,20 @@ def pToken(pSent):
                 temp.append('.')
                 if len(tlist)>1:
                     temp.append(tlist[1])
-        # Proper Tokenization for text containing '...'  
-        elif re.search('^[A-Za-z0-9\'\-]+(\.{2,}[A-Za-z0-9]*[\!@\*\?]*)+$',t):
-            wlist = re.findall('[A-Za-z0-9\'\-]+[\!@\*\?]*',t)
+        # This portion tries to Tokenize out all emojis
+        elif re.search('^[.]+(\.{2,}[.]*)+$',t):
+            wlist = re.findall('[^\.]+',t)
             dlist = re.findall('\.{2,}',t)
             i=0
             j=0
             while i<len(wlist):
-                if re.search('^[A-Za-z0-9\'\-]+[\!@\*\?]*$',wlist[i]):
-                    tlist = re.findall('[A-Za-z0-9\'\-]+[!@\*\?]*',wlist[i])
-                    temp.append(re.findall('[A-Za-z0-9\'\-]+',tlist[0])[0])
-                    if re.search('[\!@\*\?]+',tlist[0]):
-                        temp.append(re.findall('[\!@\*\?]+',tlist[0])[0])
+                if re.search('^[^\.]+$',wlist[i]):
+                    tlist = re.findall('[^\.]+*',wlist[i])
+                    temp.append(re.findall('[^\.]+',tlist[0])[0])
                 if j<len(dlist):
                     temp.append(dlist[j])
                 i = i+1
                 j = j+1
-        # Proper Tokenization for punctuation attached to word tokens 
-        elif re.search('^[A-Za-z0-9\'\-]+[\!@\*\?]+$',t):
-            for x in re.findall('[A-Za-z0-9\'\-]+',t):
-                temp.append(x)
-            for x in re.findall('[\!@\*\?]+',t):
-                temp.append(x)
         # Default action if string is not empty
         elif t != "":
             temp.append(t)
