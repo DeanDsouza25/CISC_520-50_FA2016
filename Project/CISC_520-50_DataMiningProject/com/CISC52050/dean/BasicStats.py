@@ -7,6 +7,7 @@ import nltk
 from nltk.text import Text
 from ProjectTokenizer import pToken
 from ProjectTagger import pTagger
+from nltk.corpus import stopwords
 
 # Loading all text data
 txtFile=open('C:/Users/demon/OneDrive/Documents/GitHub/CISC_520-50_FA2016/Project/data/AllText.txt','r')
@@ -14,15 +15,21 @@ tempTxt = txtFile.read()
 txtFile.close()
 
 # Tokenizing the text
-pTok=pToken(tempTxt)
+pTok1 = pToken(tempTxt)
 
-# Basic statistics of the text
-#print("Number of Words : "+str(len(pTok)))
-#print("Number of Unique Words : "+str(len(set(pTok))))
-#print("Lexical Diversity : "+str(len(pTok)/len(set(pTok))))
+# Basic Statistics of the text without removing stopwords
+#print("Number of Words : "+str(len(pTok1)))
+#print("Number of Unique Words : "+str(len(set(pTok1))))
+#print("Lexical Diversity : "+str(len(pTok1)/len(set(pTok1))))
+
+# Basic Statistics after removing stopwords
+#pTok2 = [w.lower() for w in pTok1 if w not in stopwords.words('english')]
+#print("Number of Words : "+str(len(pTok2)))
+#print("Number of Unique Words : "+str(len(set(pTok2))))
+#print("Lexical Diversity : "+str(len(pTok2)/len(set(pTok2))))
 
 # Converting to nltk.text.Text form to easily create Frequency Distribution 
-nText = Text(pTok)
+nText = Text(pTok1)
 fdistv = nltk.FreqDist(nText)
 vocab = fdistv.keys()
 
@@ -38,11 +45,17 @@ vocab = fdistv.keys()
 
 # Tagging the tokens with Part-of-Speech tag
 taggedTok = pTagger(vocab)
-tags = [t for (w,t) in taggedTok]
+tags = []
+for tag in taggedTok:
+    for t2 in tag:
+        if isinstance(t2, tuple):
+            tags.append(t2[1])
+        elif t2 in ['link','punct','UserID','htag','email','emoji','num']:
+            tags.append(t2)
 
 # Frequency Distribution of tags
 fdisttag=nltk.FreqDist(tags)
-fdisttag.tabulate()
+#fdisttag.tabulate()
 
 # Frequency Distribution Plot of tags
-#fdisttag.plot()
+fdisttag.plot(50)

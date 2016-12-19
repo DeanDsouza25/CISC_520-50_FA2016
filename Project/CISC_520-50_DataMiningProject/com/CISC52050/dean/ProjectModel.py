@@ -7,10 +7,10 @@ import nltk
 import re
 import random
 import math
-import collections
 from ProjectTokenizer import pToken
 from ProjectTagger import pTagger
 from nltk.corpus import stopwords
+from nltk.text import Text
 
 # Declaring empty holder for training set
 allTweets=[]
@@ -25,8 +25,8 @@ csvfile.close()
 negSet = [(e,s) for (e,s) in allTweets if s == '0']
 posSet = [(e,s) for (e,s) in allTweets if s == '4']
 # Defining separation parameter for each sentiment
-negCutOff = int(math.floor(len(negSet)*0.75))
-posCutOff = int(math.floor(len(posSet)*0.75))
+negCutOff = int(math.floor(len(negSet)*0.8))
+posCutOff = int(math.floor(len(posSet)*0.8))
 # Creating Training and Testing sets
 trainTweets = negSet[:negCutOff] + posSet[:posCutOff]
 testTweets = negSet[negCutOff:] + posSet[posCutOff:]
@@ -38,7 +38,7 @@ random.shuffle(testTweets)
 def getWordsInTweets(tweets):
     wordsInTweets=[]
     for (words, sentiment) in tweets:
-        filter1Words = ([w.lower() for w in pToken(words) if len(w)>3 and w not in stopwords.words('english')])
+        filter1Words = ([w.lower() for w in pToken(words) if len(w)>2 and w not in stopwords.words('english')])
         filteredWords = pTagger(filter1Words) 
         for w in filteredWords:
             if (w[0][1] not in ['UserID','email', 'link']):
@@ -63,62 +63,46 @@ def getWordFeatures(tWordList, num):
     for (word,freq) in tfd.iteritems():
         negScore = nltk.metrics.BigramAssocMeasures.chi_sq(tcfd['0'][word], (freq,negCount), totalCount)
         poScore = nltk.metrics.BigramAssocMeasures.chi_sq(tcfd['4'][word], (freq,posCount), totalCount)
-        wScores[word] = negScore +poScore
+        wScores[word] = negScore + poScore
     # Sorting based on word scores and then creating set of 'n' best word features 
     bestVals = sorted(wScores.iteritems(), key=lambda (w,s): s, reverse=True)[:num]
     bestFeats = set([w for (w,s) in bestVals])
     return bestFeats
 
-def evaluateNBC(num):
-    # Using the getWordsInTweets() and getWordFeatures() to get the best features to use in the FeatExt()
-    tweetsFeats = getWordFeatures(getWordsInTweets(trainTweets),num)
-    # Function to extract features from Tweets
-    def FeatExt(ttweet):
-        tagdWords = pTagger([w.lower() for w in pToken(ttweet) if len(w)>3 and w not in stopwords.words('english')])
-        tWords = []
-        for w in tagdWords:
-            if (w[0][1] not in ['UserID','email', 'link']):
-                print(w[0][0])
-                tWords.append(w[0][0])       
-        feat = {}
-        for e in tweetsFeats:
-            feat['contains(%s)' % e] = (e in tWords)
-        for e in tWords:
-            if re.search('\!{2,}',e):
-                feat['!']=True
-        for e in tWords:
-            if re.search('\?{2,}',e):
-                feat['?']=True
-        for e in tWords:
-            if re.search('\.{3,}',e):
-                feat['.']=True
-        return feat
+# Using the getWordsInTweets() and getWordFeatures() to get the best features to use in the FeatExt()
+tweetsFeats = getWordFeatures(getWordsInTweets(trainTweets),2000)
+# Function to extract features from Tweets
+def FeatExt(ttweet):
+    tagdWords = pTagger([w.lower() for w in pToken(ttweet) if len(w)>2 and w not in stopwords.words('english')])
+    tWords = []
+    for w in tagdWords:
+        if (w[0][1] not in ['UserID','email', 'link']):
+            tWords.append(w[0][0])       
+    feat = {}
+    for e in tweetsFeats:
+        feat['contains(%s)' % e] = (e in tWords)
+    for e in tWords:
+        if re.search('\!{2,}',e):
+            feat['!']=True
+    for e in tWords:
+        if re.search('\?{2,}',e):
+            feat['?']=True
+    for e in tWords:
+        if re.search('\.{3,}',e):
+            feat['.']=True
+    return feat
          
-    # Applying features to training and testing sets
-    trainTweetsApplied = nltk.classify.apply_features(FeatExt, trainTweets)
-    testTweetsApplied = nltk.classify.apply_features(FeatExt, testTweets)
-    # Building the Naive Bayes Classifier
-    classifierNB = nltk.NaiveBayesClassifier.train(trainTweetsApplied)
-        
-    # Preparing data for evaluation
-    refSet = collections.defaultdict(set)
-    testFeatSet = collections.defaultdict(set)
-    for i, (feature,sentiment) in enumerate(testTweetsApplied):
-        refSet[sentiment].add(i)
-        pred= classifierNB.classify(feature)
-        testFeatSet[pred].add(i)
-        
-    print("evaluating best %d features: " %(num))
-    print(nltk.classify.accuracy(classifierNB, testTweetsApplied))
-    print("Precision for negative Tweets: ", nltk.metrics.precision(refSet['0'], testFeatSet['0']))
-    print("Recall for negative Tweets: ", nltk.metrics.recall(refSet['0'], testFeatSet['0']))
-    print()
-    print("Precision for positive Tweets: ", nltk.metrics.precision(refSet['4'], testFeatSet['4']))
-    print("Recall for positive Tweets: ", nltk.metrics.recall(refSet['4'], testFeatSet['4']))
-    print(classifierNB.show_most_informative_features(10))
+# Applying features to training set
+trainTweetsApplied = nltk.classify.apply_features(FeatExt, trainTweets)
 
-evaluateNBC(1000)
+# Building the Classifiers
+classifierNB = nltk.NaiveBayesClassifier.train(trainTweetsApplied)
+        
+# Most informative features
+#print(classifierNB.show_most_informative_features(30))
 
-# Building Decision Tree Classifier
-#classifierDT = nltk.DecisionTreeClassifier.train(trainTweetsApplied)
-#print(classifierDT.pseudocode(depth=5))
+tsent = "Thank uuuuuuuuu everyone!!!!!!! #justholdon"
+tsent2 = [(tsent,'2')]
+tsentapplied = nltk.classify.apply_features(FeatExt,tsent2)
+pred = classifierNB.classify(tsentapplied)
+print("For the test sentence of %s = %s" % (tsent,pred))
