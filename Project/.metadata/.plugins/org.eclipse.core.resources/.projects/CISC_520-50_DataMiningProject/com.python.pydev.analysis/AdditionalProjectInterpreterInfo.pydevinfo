@@ -1,0 +1,56 @@
+-- VERSION_4
+-- START DISKCACHE_2
+C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\.metadata\.plugins\org.eclipse.core.resources\.projects\CISC_520-50_DataMiningProject\com.python.pydev.analysis\v2_indexcache
+com.CISC52050.dean.ProjectTagger|1481725531899071000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTagger.py
+com.CISC52050.dean.__init__|1480770316036413000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\__init__.py
+com.CISC52050.dean.RSData|1481638934313323000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\RSData.py
+com.__init__|1480770316039415000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\__init__.py
+com.CISC52050.dean.DTEvaluator|1481742768166520000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\DTEvaluator.py
+com.CISC52050.dean.NBEvaluator|1481733261811916000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\NBEvaluator.py
+com.CISC52050.dean.WPData|1481638328828005000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\WPData.py
+com.CISC52050.dean.ProjectTokenizer|1481673491519930000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTokenizer.py
+com.CISC52050.dean.BasicStats|1481726742766555000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\BasicStats.py
+com.CISC52050.__init__|1480770316038414000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\__init__.py
+com.CISC52050.dean.ProjectModel|1481753380806343000|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectModel.py
+-- END DISKCACHE
+-- START DICTIONARY
+8
+7=com.CISC52050.dean.ProjectTagger
+5=com.CISC52050.dean.RSData
+2=com.CISC52050.dean.DTEvaluator
+1=com.CISC52050.dean.NBEvaluator
+4=com.CISC52050.dean.WPData
+8=com.CISC52050.dean.ProjectTokenizer
+6=com.CISC52050.dean.BasicStats
+3=com.CISC52050.dean.ProjectModel
+-- END DICTIONARY
+-- START TREE 1
+24
+all|3|allTweets!11@allTweets!19@allTweets!27@
+cla|1|classifierNB!27@
+csv|4|csvfile!35@csvfile!19@csvfile!11@csvfile!27@
+dfi|2|dfile!43@dfile!35@
+eva|2|evaluateDTC!18@evaluateNBC!10@
+fdi|2|fdisttag!51@fdistv!51@
+fea|1|FeatExt!26@
+get|7|getWordsInTweets!10@getWordFeatures!10@getWordsInTweets!26@getWordsInTweets!18@getWordFeatures!18@getWordFeatures!26@getNFeats!18@
+neg|6|negCutOff!19@negSet!27@negSet!19@negCutOff!11@negSet!11@negCutOff!27@
+nfi|2|nfile!35@nfile!43@
+nte|1|nText!51@
+pos|6|posCutOff!19@posSet!27@posSet!11@posCutOff!27@posSet!19@posCutOff!11@
+pre|1|pred!27@
+pta|1|pTagger!58@
+pto|2|pToken!66@pTok1!51@
+rea|4|reader!27@reader!35@reader!11@reader!19@
+tag|2|tags!51@taggedTok!51@
+tem|1|tempTxt!51@
+tes|3|testTweets!19@testTweets!11@testTweets!27@
+tra|4|trainTweetsApplied!27@trainTweets!27@trainTweets!19@trainTweets!11@
+tse|2|tsent!27@tsentapplied!27@
+twe|2|tweetsFeats!27@tweetsFeat!19@
+txt|1|txtFile!51@
+voc|1|vocab!51@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

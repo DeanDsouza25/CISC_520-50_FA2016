@@ -1,0 +1,209 @@
+---
+title: "Assignment 08"
+subtitle: "Regression Analysis"
+author: 
+- "Dean D'souza"
+- "H.U. ID: 168424"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(readxl)
+library(lattice)
+set.seed(695949)
+```
+
+__*Redo examples 9.10, 9.11, 9.15, and 9.16 from the chapter and compare your answers with the book's result. The dataset required is supplied in the unit*__  
+  
+  For the purpose of this assignment I chose to perform the examples using R through R studio.  
+  
+# Solutions:
+
+### Example 9.10: Interpreting Regression Results for the Colleges and Universities Data  
+  
+  We perform the required commands for obtaining the required statistics as follows (Names of each variable were shortened for convenience):
+
+```{r, warning=FALSE, message=FALSE}
+# Importing the data
+cau <- read_excel("~/GitHub/CISC_520-50_FA2016/Assignment8/data/Colleges and Universities.xlsx", skip = 1)
+
+# Cleaning up the data frame
+cau <- cau[,-8]
+cau <- cau[c(1:49),]
+names(cau) <- c("School","Type","SAT","Acceptance","Expenditure","Top.10.HS","GraduationPercent")
+
+# Summary Statistics
+summary(cau)
+
+# Building the multiple Regression Model
+cau.lm <- lm(GraduationPercent ~ SAT + Acceptance + Expenditure + Top.10.HS, data=cau)
+
+# Model Statistics
+summary(cau.lm)
+anova(cau.lm)
+confint(cau.lm)
+
+# Plot for Top 10% HS
+plot(cau$Top.10.HS, cau.lm$residuals, xlab = "Top 10% HS", ylab = "Residuals", main = "Top 10% HS Residual Plot")
+abline(0,0)
+```  
+  
+  As we can see from the above statistics, we obtain a similar value for R-squared of 0.53 and also the p-value for each of the variables indicate that they are all significant. We also plot a single residual plot for  TOP 10% HS which confirms that assumptions seem to be met. 
+
+### Example 9.11: Identifying the best Regression Model (Banking Data)  
+  
+  We perform the commands for obtaining the first model as follows (Names of each variable were shortened for convenience):
+
+```{r, warning=FALSE, message=FALSE}
+# Importing the data
+bd <- read_excel("~/GitHub/CISC_520-50_FA2016/Assignment8/data/Banking Data.xlsx", skip = 2)
+
+# Cleaning up the data
+bd <- bd[-103,]
+names(bd) <- c("MedAge","MedEdu","MedInc","MedHomeVal","MedWealth","AvgBal")
+
+# Summary of data
+summary(bd)
+
+# Building the first model
+bd.lm <- lm(AvgBal ~ MedAge + MedEdu + MedInc + MedHomeVal + MedWealth, data=bd)
+summary(bd.lm)
+```  
+  
+  We can see that Median Home Value (MedHomeVal) is not significant (as the p-value is greater than 0.05 and is the largest among all variables). Hence we build the new model as follows:
+  
+```{r, warning=FALSE, message=FALSE}
+# Building the second model
+bd.lm2 <- lm(AvgBal ~ MedAge + MedEdu + MedInc + MedWealth, data=bd)
+summary(bd.lm2)
+```  
+  
+  We can thus verify that the Adjusted R-squared value increases slightly while the R-squared value decreases slightly. Additionally, we can also see that the p-value for Median Years of Education (MedEdu) has decreased below the significance level of 0.05 and hence all terms are significant.  
+  
+### Example 9.15: A Regression Model with Multiple Levels of Categorical Variables  
+  
+  We perform the commands for obtaining the required statistics as follows (Names of each variable were shortened for convenience):
+  
+```{r, warning=FALSE, message=FALSE}
+# Importing the data
+sf <- read_excel("~/GitHub/CISC_520-50_FA2016/Assignment8/data/Surface Finish.xlsx", skip = 1)
+
+# Cleaning up and transforming data
+sf <- sf[-36,]
+names(sf) <- c("Part","SurFin","RPM","CT")
+
+CT_A <- NULL
+for (i in 1:nrow(sf)){
+  if(sf[i,]$CT == 'A'){
+    CT_A[i] <- 1
+  } else {
+    CT_A[i] <- 0
+  }
+}
+
+CT_B <- NULL
+for (i in 1:nrow(sf)){
+  if(sf[i,]$CT == 'B'){
+    CT_B[i] <- 1
+  } else {
+    CT_B[i] <- 0
+  }
+}
+
+CT_C <- NULL
+for (i in 1:nrow(sf)){
+  if(sf[i,]$CT == 'C'){
+    CT_C[i] <- 1
+  } else {
+    CT_C[i] <- 0
+  }
+}
+
+CT_D <- NULL
+for (i in 1:nrow(sf)){
+  if(sf[i,]$CT == 'D'){
+    CT_D[i] <- 1
+  } else {
+    CT_D[i] <- 0
+  }
+}
+
+sf <- sf[,-4]
+
+new_sf <- data.frame(sf, CT_A, CT_B, CT_C, CT_D)
+
+# Summary Statistics
+summary(new_sf)
+```  
+  
+  It should be noted that the 'Part' variable refers to a unique identifier for each part and hence can be left out of the regression model. We build the regression model as follows:
+  
+```{r, warning=FALSE, message=FALSE}
+# Building the model
+sf.lm <- lm(SurFin ~ RPM + CT_A + CT_B + CT_C + CT_D, data=new_sf)
+summary(sf.lm)
+```  
+  
+  As we can see from the above summary statistics, most of the new columns created (except for parts of type 'D' which we cannot verify here due to singularities) as well as 'RPM' are significant and we may choose to build additional models for each of the Cutting Tools as follows:
+  
+```{r, warning=FALSE, message=FALSE}
+# Building model for Type="A"
+sf.lma <- lm(SurFin ~ RPM + CT_A, data=new_sf)
+summary(sf.lma)
+
+# Building model for Type="B"
+sf.lmb <- lm(SurFin ~ RPM + CT_B, data=new_sf)
+summary(sf.lmb)
+
+# Building model for Type="C"
+sf.lmc <- lm(SurFin ~ RPM + CT_C, data=new_sf)
+summary(sf.lmc)
+
+# Building model for Type="D"
+sf.lmd <- lm(SurFin ~ RPM + CT_D, data=new_sf)
+summary(sf.lmd)
+```  
+
+### Example 9.16: Modeling Beverage Sales Using Curvilinear Regression  
+  
+  We perform the commands to obtain the required statistics as follows:
+  
+```{r, warning=FALSE, message=FALSE}
+# Importing the data
+bsal <- read_excel("~/GitHub/CISC_520-50_FA2016/Assignment8/data/Beverage Sales.xlsx", skip = 1)
+
+# Cleaning up the data
+bsal <- bsal[-22,]
+
+# Summary Statistics
+summary(bsal)
+
+# Building the model
+bsal.lm <- lm(Sales ~ Temperature, data=bsal)
+summary(bsal.lm)
+
+# Plotting
+par(mfrow=c(2,2))
+plot(bsal.lm)
+```  
+  
+  We also build another model taking into account the curvilinear nature of the data.
+  
+```{r, warning=FALSE, message=FALSE}
+# Building the  curvilinear model
+bsal.lm2 <- lm(Sales ~ Temperature + (Temperature*Temperature), data=bsal)
+summary(bsal.lm2)
+
+# Plotting
+par(mfrow=c(2,2))
+plot(bsal.lm2)
+```  
+  
+  As we can see form the above summary statistics, the algorithm had automatically adjusted for the curvilinear nature of the data and hence we obtain the best model as shown above.
+  
+  
+# References  
+  
+  [1] "Assessing Regression" Lecture Slides, Stephen Penn, DM, PMP, Harrisburg University of Science and Technology, ANLY-510, Summer 2016 

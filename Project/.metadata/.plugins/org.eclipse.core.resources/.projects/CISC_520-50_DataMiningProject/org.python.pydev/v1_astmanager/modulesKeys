@@ -1,0 +1,12 @@
+MODULES_MANAGER_V2
+com.CISC52050.__init__|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\__init__.py
+com.CISC52050.dean.BasicStats|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\BasicStats.py
+com.CISC52050.dean.DTEvaluator|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\DTEvaluator.py
+com.CISC52050.dean.NBEvaluator|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\NBEvaluator.py
+com.CISC52050.dean.ProjectModel|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectModel.py
+com.CISC52050.dean.ProjectTagger|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTagger.py
+com.CISC52050.dean.ProjectTokenizer|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\ProjectTokenizer.py
+com.CISC52050.dean.RSData|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\RSData.py
+com.CISC52050.dean.WPData|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\WPData.py
+com.CISC52050.dean.__init__|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\CISC52050\dean\__init__.py
+com.__init__|C:\Users\demon\OneDrive\Documents\GitHub\CISC_520-50_FA2016\Project\CISC_520-50_DataMiningProject\com\__init__.py
